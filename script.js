@@ -122,6 +122,11 @@ const budgetConfirm = document.querySelector("[data-budget-confirm]");
 const focusCarousel = document.querySelector("[data-focus-carousel]");
 const focusPrevButton = document.querySelector("[data-focus-prev]");
 const focusNextButton = document.querySelector("[data-focus-next]");
+const menuToggle = document.querySelector("[data-menu-open]");
+const menuCloseTargets = document.querySelectorAll("[data-menu-close]");
+const siteMenu = document.querySelector("[data-site-menu]");
+const siteMenuLinks = document.querySelectorAll(".site-nav a");
+const mobileMenuBreakpoint = window.matchMedia("(max-width: 760px)");
 const budgetWhatsappUrl = "https://wa.me/5547999988082?text=Ol%C3%A1!%20Quero%20conversar%20sobre%20um%20projeto%20e%20solicitar%20um%20or%C3%A7amento!";
 
 let activeProjectKey = null;
@@ -131,6 +136,25 @@ let visibleProjects = 5;
 const lockPage = (locked) => {
   document.body.style.overflow = locked ? "hidden" : "";
 };
+
+const setMenuState = (open) => {
+  if (!siteMenu || !menuToggle) return;
+
+  const shouldLockPage = open && mobileMenuBreakpoint.matches;
+  siteMenu.classList.toggle("is-open", shouldLockPage);
+  menuToggle.setAttribute("aria-expanded", String(shouldLockPage));
+  document.body.classList.toggle("menu-open", shouldLockPage);
+
+  menuCloseTargets.forEach((target) => {
+    if ("hidden" in target) {
+      target.hidden = !shouldLockPage;
+    }
+    target.classList.toggle("is-open", shouldLockPage);
+  });
+};
+
+const openMenu = () => setMenuState(true);
+const closeMenu = () => setMenuState(false);
 
 const playManagedVideo = (video) => {
   if (!video || document.hidden || prefersReducedMotion.matches) return;
@@ -279,6 +303,7 @@ const closeBudgetModal = () => {
 
 const getFocusCards = () => [...(focusCarousel?.querySelectorAll(".focus-card") ?? [])];
 const isTouchFocusMode = () => window.matchMedia("(hover: none)").matches;
+const isMobileFocusLayout = () => window.matchMedia("(max-width: 760px)").matches;
 
 const getFocusTargetScrollLeft = (card) => {
   if (!focusCarousel || !card) return 0;
@@ -338,6 +363,27 @@ budgetConfirm?.addEventListener("click", (event) => {
   window.open(budgetWhatsappUrl, "_blank", "noopener,noreferrer");
 });
 
+menuToggle?.addEventListener("click", () => {
+  const isOpen = siteMenu?.classList.contains("is-open");
+  setMenuState(!isOpen);
+});
+
+menuCloseTargets.forEach((target) => {
+  target.addEventListener("click", closeMenu);
+});
+
+siteMenuLinks.forEach((link) => {
+  link.addEventListener("click", closeMenu);
+});
+
+document.addEventListener("click", (event) => {
+  if (!mobileMenuBreakpoint.matches) return;
+  if (!siteMenu?.classList.contains("is-open")) return;
+  if (event.target.closest("[data-site-menu]")) return;
+  if (event.target.closest("[data-menu-open]")) return;
+  closeMenu();
+});
+
 const scrollFocusCarousel = (direction) => {
   if (!focusCarousel) return;
 
@@ -374,10 +420,8 @@ const initializeFocusCarousel = () => {
   const cards = getFocusCards();
   if (!cards.length) return;
 
-  const middleIndex = Math.floor(cards.length / 2);
-  const middleCard = cards[middleIndex];
-
-  focusCarousel.scrollLeft = getFocusTargetScrollLeft(middleCard);
+  const targetCard = isMobileFocusLayout() ? cards[0] : cards[Math.floor(cards.length / 2)];
+  focusCarousel.scrollLeft = getFocusTargetScrollLeft(targetCard);
 };
 
 getFocusCards().forEach((card) => {
@@ -397,6 +441,9 @@ document.addEventListener("click", (event) => {
 window.addEventListener("resize", () => {
   if (!isTouchFocusMode()) {
     closeFocusCards();
+  }
+  if (!mobileMenuBreakpoint.matches) {
+    closeMenu();
   }
 });
 
@@ -432,6 +479,10 @@ window.addEventListener("keydown", (event) => {
 
   if (event.key === "Escape" && budgetModal && !budgetModal.hidden) {
     closeBudgetModal();
+  }
+
+  if (event.key === "Escape" && siteMenu?.classList.contains("is-open")) {
+    closeMenu();
   }
 });
 

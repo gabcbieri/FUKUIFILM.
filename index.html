@@ -24,7 +24,23 @@
       </span>
     </a>
 
-    <nav class="site-nav" aria-label="Principal">
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label="Abrir menu"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      data-menu-open
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="site-menu-backdrop" data-menu-close hidden></div>
+
+    <nav class="site-nav" id="site-menu" aria-label="Principal" data-site-menu>
+      <button class="site-nav-close" type="button" aria-label="Fechar menu" data-menu-close>&times;</button>
       <a href="#sobre">Sobre</a>
       <a href="#servicos">Servi&ccedil;os</a>
       <a href="#publicidade">Publicidade</a>
@@ -419,8 +435,11 @@
       </div>
 
       <div class="project-modal-stage">
-        <button class="project-nav prev" type="button" data-project-prev aria-label="Anterior">&#8249;</button>
         <div class="project-modal-media" data-project-media></div>
+      </div>
+
+      <div class="project-modal-controls" aria-label="Navega&ccedil;&atilde;o de m&iacute;dia">
+        <button class="project-nav prev" type="button" data-project-prev aria-label="Anterior">&#8249;</button>
         <button class="project-nav next" type="button" data-project-next aria-label="Pr&oacute;ximo">&#8250;</button>
       </div>
 
@@ -450,7 +469,6 @@
       </div>
     </div>
   </div>
-
   <script src="script.js" defer></script>
 </body>
 </html>

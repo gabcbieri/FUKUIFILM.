@@ -18,6 +18,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.menu-open {
+  overflow: hidden;
+}
+
 h1,
 h2,
 h3,
@@ -74,6 +78,35 @@ textarea {
   color: #c1121f;
 }
 
+.menu-toggle,
+.site-nav-close,
+.site-menu-backdrop {
+  display: none;
+}
+
+.menu-toggle {
+  margin-left: auto;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f2ede6;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 999px;
+}
+
 .site-nav {
   position: absolute;
   left: 50%;
@@ -93,6 +126,19 @@ textarea {
 
 .site-nav a:hover {
   color: #fffdfd;
+}
+
+.site-nav-close {
+  align-self: flex-end;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #f2ede6;
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .budget-btn {
@@ -532,10 +578,7 @@ main {
 }
 
 .project-modal-stage {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 18px;
-  align-items: center;
+  display: block;
 }
 
 .project-nav {
@@ -546,6 +589,14 @@ main {
   background: transparent;
   color: #f2ede6;
   cursor: pointer;
+}
+
+.project-modal-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
 }
 
 .project-modal-media {
@@ -1757,25 +1808,83 @@ h3 {
 
 @media (max-width: 760px) {
   .site-header {
-    flex-wrap: wrap;
-    gap: 14px;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    order: 3;
+    margin-left: 0;
+  }
+
+  .site-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
+    display: block;
+    background: rgba(0, 0, 0, 0.62);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s ease;
+  }
+
+  .site-menu-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .site-nav {
-    position: static;
-    transform: none;
-    order: 3;
-    width: 100%;
-    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: auto;
+    z-index: 9998;
+    transform: translateX(100%);
+    width: min(82vw, 320px);
+    height: 100dvh;
+    padding: 22px 18px 28px;
+    display: grid;
+    align-content: start;
+    justify-items: stretch;
+    gap: 8px;
+    background: rgba(8, 8, 8, 0.98);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: -24px 0 60px rgba(0, 0, 0, 0.38);
+    transition: transform 0.32s ease;
+  }
+
+  .site-nav.is-open {
+    transform: translateX(0);
+  }
+
+  .site-nav-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  .site-nav a {
+    padding: 14px 8px;
+    font-size: 1rem;
+    color: #f2ede6;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .budget-btn {
-    margin-left: 0;
+    display: inline-flex;
     order: 2;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 9px 14px;
+    font-size: 0.76rem;
+    white-space: nowrap;
   }
 
   main {
-    padding-top: 150px;
+    padding-top: 88px;
   }
 
   .hero,
